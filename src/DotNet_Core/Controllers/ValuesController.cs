@@ -3,17 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using DotNetCore.Common;
 
 namespace DotNet_Core.Controllers
 {
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {
+        private SQLiteHelper helper;
+        public ValuesController(SQLiteHelper sqiteHelper)
+        {
+            helper = sqiteHelper;
+        }
+
         // GET api/values
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            return new string[] { "value1", "value2" };
+            var reader = helper.ExecuteReader("select * from person", System.Data.CommandType.Text);
+
+            List<string> list = new List<string>();
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    string name = reader.GetString(1);
+                    list.Add(name);
+                }
+            }
+
+            return list;
         }
 
         // GET api/values/5

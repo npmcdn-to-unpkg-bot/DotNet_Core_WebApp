@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using DotNetCore.Common;
 
 namespace DotNet_Core
 {
@@ -38,6 +39,9 @@ namespace DotNet_Core
             services.AddApplicationInsightsTelemetry(Configuration);
 
             services.AddMvc();
+
+            string connectionString = Configuration.GetConnectionString("Sqlite");
+            services.Add(new ServiceDescriptor(typeof(SQLiteHelper), new SQLiteHelper(connectionString)));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
@@ -49,6 +53,8 @@ namespace DotNet_Core
             app.UseApplicationInsightsRequestTelemetry();
 
             app.UseApplicationInsightsExceptionTelemetry();
+
+            app.UseStaticFiles();
 
             app.UseMvc();
         }
