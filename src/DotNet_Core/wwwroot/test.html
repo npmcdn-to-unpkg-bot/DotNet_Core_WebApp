@@ -5,19 +5,25 @@
     <title></title>
     <script src="lib/angular-1.5.5/angular.min.js"></script>
     <script src="lib/angular-1.5.5/angular-route.min.js"></script>
+    <link href="lib/Flat-UI-master/css/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="lib/Flat-UI-master/css/flat-ui.css" rel="stylesheet" />
 </head>
 <body ng-controller="mainCtrl">
     {{::content}}
     {{'hello world'}}
 
 
-    <h2>AngularJS 路由应用</h2>
-    <ul>
-        <li><a href="#/">首页</a></li>
-        <li><a href="#/page">Page</a></li>
-        <li><a href="#/computers">电脑</a></li>
-        <li><a href="#/printers">打印机</a></li>
-        <li><a href="#/blabla">其他</a></li>
+    <div class="jumbotron">
+        <h1>Hello, world!</h1>
+        <p>...</p>
+        <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item"><a href="#/">首页</a></li>
+        <li class="list-group-item"><a href="#/page">Page</a></li>
+        <li class="list-group-item"><a href="#/computers">电脑</a></li>
+        <li class="list-group-item"><a href="#/printers">打印机</a></li>
+        <li class="list-group-item"><a href="#/blabla">其他</a></li>
     </ul>
     <div ng-view></div>
 

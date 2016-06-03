@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using DotNetCore.Common;
+using DotNet_Core.Controllers;
+using Microsoft.EntityFrameworkCore;
 
 namespace DotNet_Core
 {
@@ -38,10 +39,10 @@ namespace DotNet_Core
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
 
-            services.AddMvc();
+            var connectionString = Configuration.GetConnectionString("Postgresql");
+            services.AddDbContext<DB>(option => option.UseNpgsql(connectionString));
 
-            string connectionString = Configuration.GetConnectionString("Sqlite");
-            services.Add(new ServiceDescriptor(typeof(SQLiteHelper), new SQLiteHelper(connectionString)));
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline

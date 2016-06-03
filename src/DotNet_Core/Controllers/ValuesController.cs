@@ -3,36 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using DotNetCore.Common;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
+using Microsoft.EntityFrameworkCore;
+using NpgsqlTypes;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.Data.Sqlite;
 
 namespace DotNet_Core.Controllers
 {
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {
-        private SQLiteHelper helper;
-        public ValuesController(SQLiteHelper sqiteHelper)
+        public DB DB { get; set; }
+
+        public ValuesController(DB db)
         {
-            helper = sqiteHelper;
+            this.DB = db;
         }
+
 
         // GET api/values
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<Person> Get()
         {
-            var reader = helper.ExecuteReader("select * from person", System.Data.CommandType.Text);
-
-            List<string> list = new List<string>();
-            if (reader.HasRows)
-            {
-                while (reader.Read())
-                {
-                    string name = reader.GetString(1);
-                    list.Add(name);
-                }
-            }
-
-            return list;
+            var persons = DB.Persons.ToList();
+            return persons;
         }
 
         // GET api/values/5
@@ -59,5 +54,29 @@ namespace DotNet_Core.Controllers
         public void Delete(int id)
         {
         }
+    }
+
+    [Table("person")]
+    public class Person
+    {
+        [Column("id")]
+        public int Id { get; set; }
+
+        [Column("name")]
+        public string Name { get; set; }
+
+        [Column("age")]
+        public int Age { get; set; }
+    }
+
+    public class DB : DbContext
+    {
+        public DB(DbContextOptions<DB> options)
+            : base(options)
+        {
+
+        }
+
+        public DbSet<Person> Persons { get; set; }
     }
 }
