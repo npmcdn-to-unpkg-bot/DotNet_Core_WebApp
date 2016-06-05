@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html ng-app="br">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="../../lib/Flat-UI-master/css/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../../lib/Flat-UI-master/css/flat-ui.min.css" rel="stylesheet" />
+    <link href="css/main.css" rel="stylesheet" />
+    <script src="//cdn.bootcss.com/jquery/3.0.0-rc1/jquery.min.js"></script>
+    <script src="../../lib/angular-1.5.5/angular.min.js"></script>
+</head>
+<body ng-controller="br.mainCtrl">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Bristrong 后台系统</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="#">Dashboard</a></li>
+                <li><a href="#">Settings</a></li>
+                <li><a href="#">Profile</a></li>
+                <li><a href="#">Help</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2 sidebar">
+                <ul class="nav nav-sidebar">
+                    <li ng-click="selectMenu($event)"><a href="#">menu1</a></li>
+                    <li ng-click="selectMenu($event)"><a href="#">menu2</a></li>
+                    <li ng-click="selectMenu($event)"><a href="#">menu3</a></li>
+                    <li ng-click="selectMenu($event)"><a href="#">menu5</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+    var app = angular.module("br", []);
+    app.config(function ($httpProvider) {
+        $httpProvider.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded';
+        $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+
+        // Override $http service's default transformRequest
+        $httpProvider.defaults.transformRequest = [function (data) {
+            /**
+             * The workhorse; converts an object to x-www-form-urlencoded serialization.
+             * @param {Object} obj
+             * @return {String}
+             */
+            var param = function (obj) {
+                var query = '';
+                var name, value, fullSubName, subName, subValue, innerObj, i;
+
+                for (name in obj) {
+                    value = obj[name];
+
+                    if (value instanceof Array) {
+                        for (i = 0; i < value.length; ++i) {
+                            subValue = value[i];
+                            fullSubName = name + '[' + i + ']';
+                            innerObj = {};
+                            innerObj[fullSubName] = subValue;
+                            query += param(innerObj) + '&';
+                        }
+                    } else if (value instanceof Object) {
+                        for (subName in value) {
+                            subValue = value[subName];
+                            fullSubName = name + '[' + subName + ']';
+                            innerObj = {};
+                            innerObj[fullSubName] = subValue;
+                            query += param(innerObj) + '&';
+                        }
+                    } else if (value !== undefined && value !== null) {
+                        query += encodeURIComponent(name) + '='
+                                + encodeURIComponent(value) + '&';
+                    }
+                }
+
+                return query.length ? query.substr(0, query.length - 1) : query;
+            };
+
+            return angular.isObject(data) && String(data) !== '[object File]'
+                    ? param(data)
+                    : data;
+        }];
+    });
+
+    app.controller("br.mainCtrl", function ($scope) {
+        $scope.selectMenu = function (event) {
+            var allMenus = event.currentTarget.parentElement.children;
+            angular.forEach(allMenus, function (item) {
+                angular.element(item).removeClass("active");
+            })
+            angular.element(event.currentTarget).addClass("active");
+        }
+    });
+</script>

@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html>
+<html ng-app="br">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="../../lib/Flat-UI-master/css/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../../lib/Flat-UI-master/css/flat-ui.min.css" rel="stylesheet" />
+    <link href="../../css/signin.css" rel="stylesheet" />
+    <script src="//cdn.bootcss.com/jquery/3.0.0-rc1/jquery.min.js"></script>
+    <script src="../../lib/angular-1.5.5/angular.min.js"></script>
+</head>
+<body ng-controller="br.account.loginCtrl">
+
+    <div class="container">
+
+        <form class="form-signin">
+            <h2 class="form-signin-heading">Plase sign in</h2>
+
+            <div class="errorMessage">{{::error}}</div>
+
+            <label for="userName" class="sr-only">用户名</label>
+            <input type="text" id="userName" class="form-control" placeholder="用户名" required="" autofocus="" ng-model="form.userName" />
+
+            <label for="inputPassword" class="sr-only">密码</label>
+            <input type="password" id="password" class="form-control" placeholder="密码" required="" ng-model="form.password" />
+            <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="login()">登录</button>
+        </form>
+
+    </div>
+</body>
+</html>
+
+<script>
+    var app = angular.module("br", []);
+    app.config(function ($httpProvider) {
+        $httpProvider.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded';
+        $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+
+        // Override $http service's default transformRequest
+        $httpProvider.defaults.transformRequest = [function (data) {
+            /**
+             * The workhorse; converts an object to x-www-form-urlencoded serialization.
+             * @param {Object} obj
+             * @return {String}
+             */
+            var param = function (obj) {
+                var query = '';
+                var name, value, fullSubName, subName, subValue, innerObj, i;
+
+                for (name in obj) {
+                    value = obj[name];
+
+                    if (value instanceof Array) {
+                        for (i = 0; i < value.length; ++i) {
+                            subValue = value[i];
+                            fullSubName = name + '[' + i + ']';
+                            innerObj = {};
+                            innerObj[fullSubName] = subValue;
+                            query += param(innerObj) + '&';
+                        }
+                    } else if (value instanceof Object) {
+                        for (subName in value) {
+                            subValue = value[subName];
+                            fullSubName = name + '[' + subName + ']';
+                            innerObj = {};
+                            innerObj[fullSubName] = subValue;
+                            query += param(innerObj) + '&';
+                        }
+                    } else if (value !== undefined && value !== null) {
+                        query += encodeURIComponent(name) + '='
+                                + encodeURIComponent(value) + '&';
+                    }
+                }
+
+                return query.length ? query.substr(0, query.length - 1) : query;
+            };
+
+            return angular.isObject(data) && String(data) !== '[object File]'
+                    ? param(data)
+                    : data;
+        }];
+    });
+    app.controller("br.account.loginCtrl", function ($scope, $http) {
+
+        $scope.form = {
+            userName: "",
+            password: ""
+        };
+        $scope.title = "login in";
+        $scope.login = function () {
+            if ($scope.form.userName == "" || $scope.form.password == "") {
+                return;
+            }
+            $http.post("/api/account/signin", $scope.form, {
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' }
+            }).then(
+                function (result) {
+                    if (result.data.error) {
+                        $scope.error = result.data.error;
+                    }
+                    else {
+                        document.location.href = "/main.html";
+                    }
+                }, function (error) {
+                    console.log(error);
+                });
+
+        }
+
+        //$scope.login = function () {
+        //    $http.get("/api/account/login/zs/123")
+        //    .then(
+        //    function () { alert('ok') },
+        //    function (error) { alert(error) });
+        //}
+    });
+
+</script>

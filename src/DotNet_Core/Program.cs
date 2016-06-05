@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Builder;
 
-namespace DotNet_Core
+namespace Bristrong.Official.WebService
 {
     public class Program
     {

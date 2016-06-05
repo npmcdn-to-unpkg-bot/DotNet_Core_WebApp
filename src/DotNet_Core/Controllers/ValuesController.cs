@@ -7,10 +7,12 @@ using Npgsql.EntityFrameworkCore.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 using NpgsqlTypes;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.Data.Sqlite;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
-namespace DotNet_Core.Controllers
+namespace Bristrong.Official.WebService.Controllers
 {
+    [Authorize(ActiveAuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {

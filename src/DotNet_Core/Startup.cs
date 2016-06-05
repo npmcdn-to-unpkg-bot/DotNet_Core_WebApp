@@ -7,10 +7,13 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using DotNet_Core.Controllers;
+using Bristrong.Official.WebService.Controllers;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Bristrong.Official.WebService.Models;
 
-namespace DotNet_Core
+namespace Bristrong.Official.WebService
 {
     public class Startup
     {
@@ -41,8 +44,11 @@ namespace DotNet_Core
 
             var connectionString = Configuration.GetConnectionString("Postgresql");
             services.AddDbContext<DB>(option => option.UseNpgsql(connectionString));
+            services.AddDbContext<AdminDbContext>(option => option.UseNpgsql(connectionString));
 
-            services.AddMvc();
+            services.AddAuthentication();
+            services.AddMvc(options => options.Filters.Add(new JsonExceptionFilterAttribute()));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
@@ -54,6 +60,14 @@ namespace DotNet_Core
             app.UseApplicationInsightsRequestTelemetry();
 
             app.UseApplicationInsightsExceptionTelemetry();
+
+            app.UseCookieAuthentication(new CookieAuthenticationOptions()
+            {
+                AuthenticationScheme = CookieAuthenticationDefaults.AuthenticationScheme,
+                ExpireTimeSpan = TimeSpan.FromMinutes(30),
+                LoginPath = new Microsoft.AspNetCore.Http.PathString("/modules/account/login.html"),
+                AutomaticAuthenticate = false
+            });
 
             app.UseStaticFiles();
 

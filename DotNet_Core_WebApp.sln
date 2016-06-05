@@ -10,7 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		global.json = global.json
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "DotNet_Core", "src\DotNet_Core\DotNet_Core.xproj", "{3DFA0C93-EF64-473E-AE2D-336D52741865}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Bristrong.Official.WebService", "src\DotNet_Core\Bristrong.Official.WebService.xproj", "{3DFA0C93-EF64-473E-AE2D-336D52741865}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
