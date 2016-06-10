@@ -1,0 +1,24 @@
+﻿<div class="account-user">
+    <div class="row">
+        <button type="button" class="btn btn-primary">新建管理员</button>
+    </div>
+    <div class="row">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>用户名</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="user in accountUsers">
+                    <td>{{user.name}}</td>
+                    <td>
+                        <a href="#">修改密码</a> |
+                        <a href="#">删除</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

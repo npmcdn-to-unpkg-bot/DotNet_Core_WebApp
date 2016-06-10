@@ -13,7 +13,7 @@ namespace Bristrong.Official.WebService.Models
         { }
 
 
-        public DbSet<User> UserSet { get; set; }
+        public DbSet<AppUser> Users { get; set; }
         //public DbSet<News> NewsSet { get; set; }
         //public DbSet<JobInformation> JobInformationSet { get; set; }
 

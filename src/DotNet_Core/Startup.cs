@@ -65,7 +65,7 @@ namespace Bristrong.Official.WebService
             {
                 AuthenticationScheme = CookieAuthenticationDefaults.AuthenticationScheme,
                 ExpireTimeSpan = TimeSpan.FromMinutes(30),
-                LoginPath = new Microsoft.AspNetCore.Http.PathString("/modules/account/login.html"),
+                LoginPath = new Microsoft.AspNetCore.Http.PathString("/login.html"),
                 AutomaticAuthenticate = false
             });
 

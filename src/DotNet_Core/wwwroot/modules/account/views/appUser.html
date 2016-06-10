@@ -1,0 +1,25 @@
+﻿<div class="app-user">
+    <div class="row">
+        <button type="button" class="btn btn-primary" ng-click="addAppUser()">创建用户</button>
+    </div>
+
+    <div class="row">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>用户名</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="user in appUsers">
+                    <td>{{user.userName}}</td>
+                    <td>
+                        <a href="#">修改</a> |
+                        <a href="#">删除</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

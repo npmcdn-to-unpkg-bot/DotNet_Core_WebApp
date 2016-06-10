@@ -11,11 +11,13 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Bristrong.Official.WebService.Models;
 using System.Security.Cryptography;
 using System.Text;
+using Bristrong.Official.WebService.ViewModels;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Bristrong.Official.WebService.Controllers
 {
+    [Authorize(ActiveAuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     public class AccountController : Controller
     {
@@ -27,13 +29,14 @@ namespace Bristrong.Official.WebService.Controllers
 
         [HttpPost]
         [Route("SignIn")]
-        public async Task SignIn(SignInModel signInModel)
+        [AllowAnonymous]
+        public async Task SignIn(LoginViewModel model)
         {
-            var signInUser = _adminDbContext.UserSet.FirstOrDefault(u => u.UserName == signInModel.UserName && u.Password == signInModel.Password);
+            var signInUser = _adminDbContext.Users.FirstOrDefault(u => u.UserName == model.UserName && u.Password == model.Password);
             if (signInUser != null)
             {
-                Claim name = new Claim("UserName", signInModel.UserName);
-                Claim pwd = new Claim("Password", signInModel.Password);
+                Claim name = new Claim("UserName", model.UserName);
+                Claim pwd = new Claim("Password", model.Password);
                 List<Claim> claims = new List<Claim> { name, pwd };
 
                 var identity = new ClaimsIdentity(claims, "UserInfo");
@@ -45,13 +48,23 @@ namespace Bristrong.Official.WebService.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IEnumerable<AppUserViewModel>> Get()
+        {
+            return await Task.FromResult(_adminDbContext.Users.Select(u =>
+                new AppUserViewModel
+                {
+                    Id = u.Id,
+                    UserName = u.UserName
+                }));
+        }
+
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task AddUser(User user)
+        public async Task AddUser(AppUser user)
         {
             try
             {
-                _adminDbContext.UserSet.Add(user);
+                _adminDbContext.Users.Add(user);
                 await _adminDbContext.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -60,23 +73,13 @@ namespace Bristrong.Official.WebService.Controllers
             }
         }
 
-        [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [HttpDelete]
         public async Task DeleteUser(int userId)
         {
-            var user = _adminDbContext.UserSet.First(u => u.Id == userId);
-            _adminDbContext.UserSet.Remove(user);
+            var user = _adminDbContext.Users.First(u => u.Id == userId);
+            _adminDbContext.Users.Remove(user);
             await _adminDbContext.SaveChangesAsync();
         }
 
-    }
-
-    public class SignInModel
-    {
-        [JsonProperty("userName")]
-        public string UserName { get; set; }
-
-        [JsonProperty("password")]
-        public string Password { get; set; }
     }
 }
